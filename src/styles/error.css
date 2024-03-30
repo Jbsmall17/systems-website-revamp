@@ -1,0 +1,54 @@
+div.error{
+    width: 100%;
+    text-align: center;
+    min-height: 100vh;
+}
+div.error  img{
+    display: block;
+    max-width: 40%;
+    margin: 0 auto;
+    margin-block-end: 3rem
+
+}
+div.error  p:nth-of-type(1){
+    color: #0C314D;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-block-end: .625rem;
+}
+div.error  p:nth-of-type(2){
+    color: #0C314D;
+    font-size: 1rem;
+    margin: 0 auto;
+    width: 27ch;
+    font-weight: 400;
+    margin-block-end: 1.1875rem;
+}
+div.error  button{
+    border:none;
+    cursor:pointer;
+    display: inline-flex;
+    padding: .625rem 1.4375rem .625rem 1rem;
+    border-radius: .375rem;
+    background: #0C314D;
+    color: #FEFBFF;
+    font-size: 1.3125rem;
+    font-weight: 400;
+    transition: all ease 0.5s;
+    margin-bottom: 0.5rem;
+}
+div.error > button:hover{
+    color:#0C314D;
+    border: 1px solid #0C314D;
+    background: transparent;
+}
+@media screen and (max-width: 425px){
+    div.error{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    div.error > div{
+        margin-block-start: 0;
+    }
+}

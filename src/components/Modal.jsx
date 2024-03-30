@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import '../styles/modal.css'
 import OtpInput from 'react-otp-input';
-// import axios from '../api'
+import axios from '../api'
 import Swal from 'sweetalert2'
-import {sendOTP, validateOTP, createComplaint} from '../backend/server.js'
-
 
 export default function Modal({func}) {
     const [loading, setLoading] = useState(false)
@@ -31,7 +29,7 @@ export default function Modal({func}) {
     // function scrollHandler(){
     //     window.scrollTo(0, 0);
     // }
-    const authenticate = async (e) => {
+    const sendOTP = async (e) => {
         e.preventDefault();
         try {
           setLoading(true);
@@ -44,18 +42,17 @@ export default function Modal({func}) {
               })
           }
           else {
-            // const response = await sendOTP(matric);
-            const response = await sendOTP(matric);
-            if (response.success) {
+            const response = await axios.post(`/authenticate`, {matric});
+            if (response.data.success) {
                 setNext(true)
             }
           }
     
         } catch (error) {          
-          if (error.status == 404) {
+          if (error.response.status == 404) {
             Swal.fire({
               icon: 'warning', 
-              text: error.message,             
+              text: error.response.data.message,             
               confirmButtonColor: '#12293A',
               })
           }
@@ -73,7 +70,7 @@ export default function Modal({func}) {
         }
       }
 
-      const validate = async (e) => {
+      const validateOTP = async (e) => {
         e.preventDefault();
         try {
           setLoading(true);
@@ -86,18 +83,18 @@ export default function Modal({func}) {
               })
           }
           else {
-            const response = await validateOTP(otp);
-            if (response.success) {
+            const response = await axios.post(`/validate`, {otp});
+            if (response.data.success) {
                 func(false)
                 window.location.reload();
             }
           }
     
         } catch (error) {
-          if (error.status == 400) {
+          if (error.response.status == 400) {
             Swal.fire({
               icon: 'warning', 
-              text: error.message,             
+              text: error.response.data.message,             
               confirmButtonColor: '#12293A',
               })
           }
@@ -128,8 +125,10 @@ export default function Modal({func}) {
               })
           }
           else {
-            const response = await createComplaint({ name, email, complaintText });
-            if (response.success) {
+            const response = await axios.post(`/complaint`, {
+                name, email, complaintText
+            });
+            if (response.data.success) {
                 Swal.fire({
                     title: 'Complaint sent', 
                     icon: 'success', 
@@ -148,10 +147,10 @@ export default function Modal({func}) {
           }
     
         } catch (error) {
-          if (error.status == 404) {
+          if (error.response.status == 404) {
             Swal.fire({
               icon: 'warning', 
-              text: error.message,             
+              text: error.response.data.message,             
               confirmButtonColor: '#12293A',
               })
           }
@@ -187,8 +186,8 @@ export default function Modal({func}) {
                     name='matric' 
                     id='matric'
                 />
-                {/* <button onClick={authenticate}>Next</button>     */}
-                <button type="submit" onClick={authenticate} disabled={loading} className='button'>
+                {/* <button onClick={sendOTP}>Next</button>     */}
+                <button type="submit" onClick={sendOTP} disabled={loading} className='button'>
                     {loading ? <> <span className="spinner" /> Please wait... </> : 'Next'}
                 </button>   
             </div>
@@ -208,7 +207,7 @@ export default function Modal({func}) {
                     <a href="#" onClick={()=>setComplaint(true)}>Send a complaint</a></p>
                 {/* <button onClick={()=>func(false)} >Next</button> */}
 
-                <button type="submit" onClick={validate} disabled={loading} className='button'>
+                <button type="submit" onClick={validateOTP} disabled={loading} className='button'>
                     {loading ? <> <span className="spinner" /> Please wait... </> : 'Next'}
                 </button>  
             </div>

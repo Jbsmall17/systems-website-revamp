@@ -9,8 +9,7 @@ import {FiMail} from 'react-icons/fi'
 import {NavLink, useNavigate} from "react-router-dom"
 import youtube from '../assets/images/youtube.svg'
 import linkedin from '../assets/images/linkedin.svg'
-// import axios from '../api'
-import {subscribe} from '../backend/server.js'
+import axios from '../api'
 import Swal from 'sweetalert2'
 import '../styles/footer.css'
 
@@ -41,11 +40,6 @@ export default function Footer() {
     setIsScreenSmall(false)
   }
     useEffect(()=>{
-        if(window.innerWidth <= 425){
-          setIsScreenSmall(true)
-          return
-        }
-        setIsScreenSmall(false)
       window.addEventListener("resize", resizeScreenFunc )
       resizeScreenFunc()
       return ()=>{
@@ -79,41 +73,35 @@ export default function Footer() {
           })
       }
       else {
-        const response = await subscribe(email);
-        // Swal.fire({
-        //   text: 'Subscription successful', 
-        //   icon: 'success', 
-        //   confirmButtonColor: '#12293A',
-        //   })
-        // .then(() => {
-        //   setEmail('')
-        // })
-
-        if (response === 'Subscriber created') {
-          Swal.fire({
-            text: 'Subscription successful',
-            icon: 'success',
-            confirmButtonColor: '#12293A',
-          }).then(() => {
-            setEmail('');
-          });
-        } else {
-          Swal.fire({
-            text: response,
-            icon: 'warning',
-            confirmButtonColor: '#12293A',
-          });
-        }
+        const response = await axios.post(`/subscribe`, {email});
+        Swal.fire({
+          text: 'Subscription successful', 
+          icon: 'success', 
+          confirmButtonColor: '#12293A',
+          })
+        .then(() => {
+          setEmail('')
+        })
       }
 
     } catch (error) {
-      console.error(error);
-      Swal.fire({
-        title: 'Oops', 
-        icon: 'error', 
-        text: 'Something went wrong! Please try again later.',             
-        confirmButtonColor: '#12293A',
-      })
+      if (error.response.status == 409) {
+        Swal.fire({
+          // title: 'Error', 
+          icon: 'warning', 
+          text: error.response.data.error,             
+          confirmButtonColor: '#12293A',
+          })
+      }
+      else{
+        console.error(error);
+        Swal.fire({
+          title: 'Oops', 
+          icon: 'error', 
+          text: 'Something went wrong! Please try again later.',             
+          confirmButtonColor: '#12293A',
+        })
+      }
     } finally {
       setLoading(false);
     }
@@ -151,9 +139,10 @@ export default function Footer() {
         <ul>
           <li><a onClick={()=>handleNavigte('/')}>Home</a></li>
           <li><a onClick={()=>{handleNavigte('/project')}}>Projects</a></li>
+          <li><a onClick={()=>{handleNavigte('/staff')}}>Staffs</a></li>
           <li><a onClick={()=>{handleNavigte('/gallery')}}>Gallery</a></li>
-          <li><a onClick={()=>{handleNavigte('/pastquestions')}} >Past Questions</a></li>
-          <li><a onClick={()=>{handleNavigte('/staffs')}} >Staff </a></li>
+          <li><a onClick={()=>{handleNavigte('/pastquestions')}} >Pastquestions</a></li>
+          <li><a onClick={()=>{handleNavigte('/staffs')}} >Staffs </a></li>
           <li><a onClick={()=>{handleNavigte('/program')}} >Program</a></li>
           <li><a onClick={()=>{handleNavigte('/alumni')}} >Alumni</a></li>
           <li><a onClick={()=>{handleNavigte('/news')}} >News</a></li>
@@ -170,7 +159,7 @@ export default function Footer() {
           </li>
         </ul>
       </div>
-      <div className='newletter'>
+      <div>
         {isScreenSmall &&
           <>
             <p className='socials-text'>Follow us:</p>

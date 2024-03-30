@@ -4,23 +4,22 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Pq from '../components/pq'
 import '../styles/pq.css'
-// import axios from '../api'
+import axios from '../api'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import Modal from '../components/Modal'
-import {fetchQuestions} from '../backend/server.js'
 
 export default function Pastquestions() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false)
     const [isSemesterFirst,setIsSemesterFirst] = useState(true)
-    const [isModalVisible, setModalVisible] = useState(true)
+    const [isModalVisible, setModalVisible] = useState(false)
     const getQuestions = async () => {
       setLoading(true)
       try {
-          const response = await fetchQuestions();
-          if (response.status === 200) {
-            setQuestions(response.data);
+          const response = await axios.get(`/questions`);
+          if (response.data.success) {
+            setQuestions(response.data.data);
             setLoading(false);
             setModalVisible(false)
           }

@@ -192,7 +192,7 @@ export default function Footer() {
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter your email' />
             {/* <button>Subscribe</button> */}
             <button type="submit" onClick={Subcribe} disabled={loading} className='button'>
-              {loading ? <> <span className="spinner" /> </> : 'Subcribe'}
+              {loading ? <> <span className="spinner" /> </> : 'Subscribe'}
             </button>
           </div>
         </div>
